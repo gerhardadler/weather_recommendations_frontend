@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:weather_recommendations/functions/tracks_from_weather_function.dart';
+import 'package:weather_recommendations/models/track_model.dart';
+import 'package:weather_recommendations/services/spotify_service.dart';
 import 'package:weather_recommendations/services/yr_service.dart';
+
+import '../functions/choose_network_image_function.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Position? _currentPosition;
   String? _currentWeatherName;
+  List<TrackModel>? _currentTracks;
 
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
@@ -69,7 +75,22 @@ class _HomeScreenState extends State<HomeScreen> {
           lat: position.latitude,
           lon: position.longitude,
         ).then(
-          (weatherName) => setState(() => _currentWeatherName = weatherName),
+          (weatherName) => setState(() {
+            _currentWeatherName = weatherName;
+            getRecommendations(
+                    recommendations: weatherRecommendationMap[weatherName])
+                .then(
+              (value) {
+                setState(
+                  () => _currentTracks = [
+                    for (final trackJson in value['tracks'])
+                      TrackModel.fromJson(trackJson)
+                  ],
+                );
+                // print(value);
+              },
+            );
+          }),
         );
       },
     );
@@ -90,7 +111,38 @@ class _HomeScreenState extends State<HomeScreen> {
             Text('LAT: ${_currentPosition?.latitude ?? ""}'),
             Text('LNG: ${_currentPosition?.longitude ?? ""}'),
             Text('Weather: ${_currentWeatherName ?? ""}'),
+            Expanded(
+              child: TrackListView(currentTracks: _currentTracks),
+            )
           ],
         ));
+  }
+}
+
+class TrackListView extends StatelessWidget {
+  const TrackListView({
+    Key? key,
+    required List<TrackModel>? currentTracks,
+  })  : _currentTracks = currentTracks,
+        super(key: key);
+
+  final List<TrackModel>? _currentTracks;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: _currentTracks != null
+          ? [
+              for (final TrackModel track in _currentTracks!)
+                ListTile(
+                    title: Text(track.name),
+                    subtitle: Text(
+                        track.artists.map((artist) => artist.name).join(', ')),
+                    leading: track.album.images.isNotEmpty
+                        ? chooseNetworkImage(track.album.images)
+                        : const Icon(Icons.loop))
+            ]
+          : [],
+    );
   }
 }

@@ -1,14 +1,15 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class ClientWithYrUserAgent extends http.Client {
+class ClientWithYrUserAgent extends http.BaseClient {
   final http.Client _client;
 
   ClientWithYrUserAgent(this._client);
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    request.headers['User-Agent'] = 'user agent value';
+    request.headers['User-Agent'] =
+        'WeatherRecommendations https://github.com/gerhardadler/weather_recommendations_frontend';
     return _client.send(request);
   }
 }
@@ -17,7 +18,8 @@ Future<Map<String, dynamic>> getYrData({
   required num lat,
   required num lon,
 }) async {
-  final response = await http.get(
+  final yrClient = ClientWithYrUserAgent(http.Client());
+  final response = await yrClient.get(
     Uri.parse(
       'https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=$lat&lon=$lon',
     ),

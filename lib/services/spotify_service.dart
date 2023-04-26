@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:weather_recommendations/models/recommendations_model.dart';
 
 const _storage = FlutterSecureStorage();
 
@@ -51,18 +52,19 @@ Future<dynamic> _spotifyRequestWithAuth({
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
-    throw Exception('Failed to search');
+    throw Exception('Failed spotify query');
   }
 }
 
 Future<Map<String, dynamic>> getRecommendations({
-  required String parametersQueryString,
+  required RecommendationsModel recommendations,
 }) async {
+  final String recommendationsQueryString = recommendations.toQueryString();
   return await _spotifyRequestWithAuth(
     request: http.Request(
       'get',
       Uri.parse(
-        'https://api.spotify.com/v1/recommendations/$parametersQueryString',
+        'https://api.spotify.com/v1/recommendations?$recommendationsQueryString',
       ),
     ),
   );
