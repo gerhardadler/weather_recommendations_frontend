@@ -1,11 +1,11 @@
 import 'package:weather_recommendations/static/genres_class.dart';
 import 'package:weather_recommendations/models/recommendations_model.dart';
 
-RecommendationsModel getRecommendationsFromWeather(String weatherSymbol) {
+RecommendationsModel getRecommendationsFromWeather(String weatherName) {
   // polar twilight should get same recommendations as daytime
-  weatherSymbol = weatherSymbol.replaceAll('_polartwilight', '');
+  weatherName = weatherName.replaceAll('_polartwilight', '');
 
-  return weatherRecommendationMap[weatherSymbol];
+  return weatherRecommendationMap[weatherName];
 }
 
 final Map weatherRecommendationMap = {

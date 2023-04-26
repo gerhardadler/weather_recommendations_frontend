@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
           (weatherName) => setState(() {
             _currentWeatherName = weatherName;
             getRecommendations(
-                    recommendations: weatherRecommendationMap[weatherName])
+                    recommendations: getRecommendationsFromWeather(weatherName))
                 .then(
               (value) {
                 setState(
