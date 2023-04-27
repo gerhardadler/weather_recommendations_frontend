@@ -6,8 +6,8 @@ import 'package:weather_recommendations/models/recommendations_model.dart';
 const _storage = FlutterSecureStorage();
 
 Future<void> updateAccessToken() async {
-  final response = await http
-      .get(Uri.parse('https://radio.ditlevolaus.no/get-access-token'));
+  final response =
+      await http.get(Uri.parse('http://10.233.242.26:8000/access_token'));
 
   if (response.statusCode == 200) {
     final String accessToken = jsonDecode(response.body)['access_token'];
@@ -15,7 +15,7 @@ Future<void> updateAccessToken() async {
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
-    throw Exception('Failed to load album');
+    throw Exception('Failed to update access token');
   }
 }
 
