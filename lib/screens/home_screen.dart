@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_recommendations/functions/tracks_from_weather_function.dart';
 import 'package:weather_recommendations/models/track_model.dart';
+import 'package:weather_recommendations/screens/customize_screen.dart';
 import 'package:weather_recommendations/services/spotify_service.dart';
 import 'package:weather_recommendations/services/yr_service.dart';
 
@@ -101,6 +102,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Weather Recommendations'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const CustomizeScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.color_lens),
+            )
+          ],
         ),
         body: Column(
           children: [

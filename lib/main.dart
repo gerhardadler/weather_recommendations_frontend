@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:weather_recommendations/providers/theme_provider.dart';
 import 'package:weather_recommendations/screens/home_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -14,7 +21,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Weather Recommendations',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: context.watch<ThemeProvider>().primaryColor,
       ),
       home: HomeScreen(),
     );
